@@ -1,13 +1,1829 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Husband Support System</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;900&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            display: ['Space Grotesk', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom animations and scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(2, 6, 23, 0.4);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(59, 130, 246, 0.2);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(59, 130, 246, 0.4);
+    }
+    
+    .animate-fadeIn {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-scaleIn {
+      animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Wave effect */
+    .wave-bg {
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans selection:bg-blue-600/30 selection:text-blue-200 min-h-screen relative overflow-x-hidden">
+
+  <!-- Fixed Ambient Space Star Canvas -->
+  <canvas id="star-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+  <!-- Confetti Rain Canvas -->
+  <canvas id="confetti-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-40 hidden"></canvas>
+
+  <!-- Global Sound Controller Toggle -->
+  <button 
+    onclick="toggleSound()"
+    class="fixed top-4 right-4 z-50 p-2.5 rounded-full bg-slate-900/60 backdrop-blur-md border border-slate-800 hover:border-blue-500/40 text-slate-400 hover:text-white transition-all cursor-pointer shadow-lg"
+    title="Toggle Sounds"
+    id="sound-toggle-btn"
+  >
+    <!-- Volume 2 Icon -->
+    <svg id="volume-icon-on" class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+    </svg>
+    <!-- Volume X Icon (hidden by default) -->
+    <svg id="volume-icon-off" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zm10.707-6l4.243 4.243m0-4.243L16.293 13.24" />
+    </svg>
+  </button>
+
+  <!-- ==================== 1. LANDING BOOT SCREEN ==================== -->
+  <div id="landing-screen" class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
+    <div class="w-full max-w-lg p-8 rounded-2xl bg-slate-950/50 backdrop-blur-xl border border-slate-800/80 shadow-2xl shadow-blue-950/20 text-center relative overflow-hidden group">
+      
+      <!-- Neon background frame glows -->
+      <div class="absolute -inset-px bg-gradient-to-r from-blue-500/10 via-transparent to-amber-500/10 rounded-2xl pointer-events-none group-hover:from-blue-500/15 group-hover:to-amber-500/15 transition-all duration-500"></div>
+      
+      <div class="relative z-10 space-y-6">
+        <!-- Top Tech Badge -->
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-950/60 border border-blue-900/50 text-xs font-mono tracking-wider text-blue-400">
+          <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+          SECURE INTERFACE DEPLOYED
+        </div>
+
+        <!-- Title -->
+        <div class="space-y-1">
+          <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white font-mono bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400">
+            Emergency Husband<br />
+            Support System <span class="text-amber-400 font-sans">v37.0</span>
+          </h1>
+          <p class="text-xs text-slate-400 tracking-widest uppercase font-mono mt-1">
+            Birthday Edition &bull; June 28, 2026
+          </p>
+        </div>
+
+        <!-- Developer Metadata Table -->
+        <div class="grid grid-cols-2 gap-3 text-left font-mono text-xs bg-black/40 p-4 rounded-xl border border-slate-900 shadow-inner">
+          <div class="text-slate-500">DEVELOPED BY:</div>
+          <div class="text-rose-400 font-bold flex items-center gap-1">
+            Pooja 
+            <svg class="w-3.5 h-3.5 fill-rose-500 text-rose-500 animate-ping absolute" viewBox="0 0 24 24" stroke="none"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            <span class="w-3.5 h-3.5"></span>
+          </div>
+
+          <div class="text-slate-500">AUTHORIZED USER:</div>
+          <div class="text-blue-400 font-semibold">Sivam</div>
+
+          <div class="text-slate-500">SYSTEM STATUS:</div>
+          <div class="text-emerald-400 font-bold flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ONLINE
+          </div>
+
+          <div class="text-slate-500">SUPPORT LEVEL:</div>
+          <div class="text-amber-400">UNLIMITED &infin;</div>
+
+          <div class="text-slate-500">LIFETIME LICENSE:</div>
+          <div class="text-sky-400 font-semibold">ACTIVE</div>
+        </div>
+
+        <!-- Authentication notice -->
+        <div class="bg-slate-900/40 border border-slate-800 rounded-xl p-3 text-xs text-left text-slate-400 flex items-center gap-3">
+          <div class="p-2 bg-blue-950/80 rounded-lg text-blue-400">
+            <svg class="w-4.5 h-4.5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <div class="text-slate-300 font-medium">Authentication Token Acknowledged</div>
+            <div>Welcome back Sivam. Your system controls are primed.</div>
+          </div>
+        </div>
+
+        <!-- Action Boot Button -->
+        <div id="boot-control-panel">
+          <button
+            onclick="triggerBootSequence()"
+            class="relative w-full py-4 px-6 rounded-xl font-mono font-bold text-sm text-black bg-gradient-to-r from-blue-400 via-sky-400 to-amber-300 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shadow-lg shadow-blue-500/10 flex items-center justify-center gap-2"
+            id="launch-support-btn"
+          >
+            LAUNCH SUPPORT SYSTEM
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Booting Progress Loader -->
+        <div id="boot-loader-panel" class="space-y-3 pt-2 hidden">
+          <div class="flex justify-between items-center text-xs font-mono">
+            <span id="boot-status-msg" class="text-blue-400 animate-pulse">CONNECTING TO STATE_SERVER_35.0...</span>
+            <span id="boot-percentage" class="text-slate-300">0%</span>
+          </div>
+          <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+            <div 
+              id="boot-progress-bar"
+              class="h-full bg-gradient-to-r from-blue-500 via-sky-400 to-amber-400 transition-all duration-150 w-0"
+            ></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== 2. MAIN DASHBOARD CONSOLE ==================== -->
+  <div id="main-dashboard" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8 hidden animate-fadeIn">
+    
+    <!-- Dashboard Header Bar -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-slate-800/80">
+      <div>
+        <div class="text-xs font-mono text-blue-400 tracking-widest uppercase flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          SECURE CONSOLE OPERATIONAL &bull; V37.0
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white mt-1">
+          Welcome, Sivam.
+        </h1>
+        <p class="text-sm text-slate-400 mt-1">
+          Your emergency mental harbor, curated with love by Pooja.
+        </p>
+      </div>
+
+      <!-- Live Metrics Grid -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Battery Monitor -->
+        <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-950/60 border border-slate-800/60 text-xs font-mono">
+          <!-- Battery Icon -->
+          <svg id="dashboard-battery-icon" class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="16" height="10" rx="2" ry="2" />
+            <path d="M22 11v2" />
+          </svg>
+          <div>
+            <span class="text-slate-500">SIVAM_BATTERY:</span> 
+            <span id="dashboard-battery-text" class="text-emerald-400 font-semibold">15%</span>
+          </div>
+        </div>
+
+        <!-- Heartbeat Status -->
+        <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-950/60 border border-slate-800/60 text-xs font-mono">
+          <!-- Clock Icon -->
+          <svg class="w-4 h-4 text-amber-400 animate-spin" style="animation-duration: 6s" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
+          </svg>
+          <div>
+            <span class="text-slate-500">EST_VAL:</span> 
+            <span class="text-amber-300 font-bold">UNLIMITED_LOVE</span>
+          </div>
+        </div>
+
+        <!-- SPECIAL BIRTHDAY BANNER ACTION -->
+        <button
+          onclick="openBirthdayPage()"
+          class="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20 hover:from-amber-400 hover:to-amber-300 text-amber-300 hover:text-black font-semibold text-xs border border-amber-500/40 hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-lg"
+          id="celebrate-btn"
+        >
+          <!-- Star Icon -->
+          <svg class="w-3.5 h-3.5 fill-amber-300 text-amber-300 animate-spin" style="animation-duration: 4s" viewBox="0 0 24 24" stroke="none">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          BIRTHDAY RELEASE PROTOCOL
+        </button>
+      </div>
+    </div>
+
+    <!-- Core Modules Grid (5 Feature Cards + 1 Battery Module) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- Module 1: Stressed -->
+      <div 
+        onclick="openModal('stressed')"
+        class="p-6 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-slate-800/60 hover:border-blue-500/40 hover:bg-slate-900/60 transition-all duration-300 cursor-pointer shadow-xl shadow-black/30 flex flex-col justify-between group h-64 relative overflow-hidden"
+        id="module-stressed"
+      >
+        <div class="absolute top-0 right-0 p-8 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all"></div>
+        <div class="space-y-4 relative z-10">
+          <div class="w-10 h-10 rounded-xl bg-blue-950/80 border border-blue-900/50 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+            <!-- Smile Icon -->
+            <svg class="w-5 h-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">Open When You're Stressed</h3>
+            <p class="text-sm text-slate-400 mt-2 line-clamp-3">
+              Hi Sivam, if you're opening this folder, I'm guessing life feels heavier than usual...
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-blue-400 font-bold tracking-wider relative z-10">
+          RUN_STRESS_MITIGATOR 
+          <svg class="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Module 2: Doubt Yourself -->
+      <div 
+        onclick="openModal('doubt')"
+        class="p-6 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-slate-800/60 hover:border-amber-500/40 hover:bg-slate-900/60 transition-all duration-300 cursor-pointer shadow-xl shadow-black/30 flex flex-col justify-between group h-64 relative overflow-hidden"
+        id="module-doubt"
+      >
+        <div class="absolute top-0 right-0 p-8 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all"></div>
+        <div class="space-y-4 relative z-10">
+          <div class="w-10 h-10 rounded-xl bg-amber-950/80 border border-amber-900/50 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+            <!-- Award Icon -->
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="8" r="7" />
+              <path stroke-linecap="round" d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">Open When You Doubt Yourself</h3>
+            <p class="text-sm text-slate-400 mt-2 line-clamp-3">
+              Hi Birthday Boy, sometimes I wish you could see yourself the way I see you...
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-amber-400 font-bold tracking-wider relative z-10">
+          LOAD_CONFIDENCE_DRIVE
+          <svg class="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Module 3: Motivation -->
+      <div 
+        onclick="openModal('motivation')"
+        class="p-6 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-slate-800/60 hover:border-emerald-500/40 hover:bg-slate-900/60 transition-all duration-300 cursor-pointer shadow-xl shadow-black/30 flex flex-col justify-between group h-64 relative overflow-hidden"
+        id="module-motivation"
+      >
+        <div class="absolute top-0 right-0 p-8 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all"></div>
+        <div class="space-y-4 relative z-10">
+          <div class="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-900/50 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+            <!-- Trending Up Icon -->
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">Open When You Need Motivation</h3>
+            <p class="text-sm text-slate-400 mt-2 line-clamp-3">
+              Hey Sivam, this is your wife sending you a system-generated reminder...
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 font-bold tracking-wider relative z-10">
+          EXECUTE_MOTIVATOR_SYS
+          <svg class="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Module 4: Miss Me -->
+      <div 
+        onclick="openModal('missme')"
+        class="p-6 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-slate-800/60 hover:border-rose-500/40 hover:bg-slate-900/60 transition-all duration-300 cursor-pointer shadow-xl shadow-black/30 flex flex-col justify-between group h-64 relative overflow-hidden"
+        id="module-missme"
+      >
+        <div class="absolute top-0 right-0 p-8 bg-rose-500/5 rounded-full blur-2xl group-hover:bg-rose-500/10 transition-all"></div>
+        <div class="space-y-4 relative z-10">
+          <div class="w-10 h-10 rounded-xl bg-rose-950/80 border border-rose-900/50 flex items-center justify-center text-rose-400 group-hover:scale-110 transition-transform">
+            <!-- Heart Icon -->
+            <svg class="w-5 h-5 fill-rose-500 text-rose-500 animate-pulse" viewBox="0 0 24 24" stroke="none">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white group-hover:text-rose-400 transition-colors">Open When You Miss Me</h3>
+            <p class="text-sm text-slate-400 mt-2 line-clamp-3">
+              Hey You ❤️ If you're opening this folder, I hope you're smiling already...
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-rose-400 font-bold tracking-wider relative z-10">
+          OPEN_MEMORIES_VAULT
+          <svg class="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Module 5: Need A Laugh -->
+      <div 
+        onclick="openModal('laugh')"
+        class="p-6 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-slate-800/60 hover:border-purple-500/40 hover:bg-slate-900/60 transition-all duration-300 cursor-pointer shadow-xl shadow-black/30 flex flex-col justify-between group h-64 relative overflow-hidden text-left"
+        id="module-laugh"
+      >
+        <div class="absolute top-0 right-0 p-8 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all"></div>
+        <div class="space-y-4 relative z-10">
+          <div class="w-10 h-10 rounded-xl bg-purple-950/80 border border-purple-900/50 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+            <!-- Terminal Icon -->
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <h3 class="text-lg font-bold text-white group-hover:text-purple-400 transition-colors">Open When You Need A Laugh</h3>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-red-500/10 border border-red-500/30 text-red-400 font-bold animate-pulse">CRITICAL BUG</span>
+            </div>
+            <p class="text-sm text-slate-400 mt-2 line-clamp-3">
+              BUG REPORT #35 - Product Sivam diagnostics console. Known Issues: Takes too much stress, requires hugs...
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-purple-400 font-bold tracking-wider relative z-10">
+          DIAGNOSE_BUG_REPORT
+          <svg class="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Module 6: Interactive Battery Booster -->
+      <div class="p-6 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-slate-800 shadow-xl flex flex-col justify-between h-64 text-left">
+        <div class="space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs font-mono text-slate-500">SYSTEM_POWER</span>
+            <span class="text-xs font-mono px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-md">REAL_TIME</span>
+          </div>
+          <h4 class="text-sm font-bold text-slate-200">Interactive Battery Booster</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Is Sivam feeling tired? Charge the system battery instantly by completing interactive recommended actions.
+          </p>
+
+          <!-- Micro Action Triggers -->
+          <div class="grid grid-cols-2 gap-2 pt-1.5">
+            <button 
+              onclick="addMetric('hug')"
+              class="py-1.5 px-2 bg-slate-900 border border-slate-800 hover:border-rose-500/30 rounded-lg text-[11px] font-mono flex items-center justify-center gap-1.5 text-slate-300 hover:text-rose-400 cursor-pointer active:scale-95 transition-all"
+            >
+              <svg class="w-3.5 h-3.5 fill-rose-500/10 text-rose-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              Hug Pooja (+25%)
+            </button>
+            <button 
+              onclick="addMetric('cake')"
+              class="py-1.5 px-2 bg-slate-900 border border-slate-800 hover:border-amber-500/30 rounded-lg text-[11px] font-mono flex items-center justify-center gap-1.5 text-slate-300 hover:text-amber-400 cursor-pointer active:scale-95 transition-all"
+            >
+              <svg class="w-3.5 h-3.5 fill-amber-500/10 text-amber-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+              Eat Cake (+15%)
+            </button>
+            <button 
+              onclick="addMetric('sleep')"
+              class="col-span-2 py-1.5 px-2 bg-slate-900 border border-slate-800 hover:border-sky-500/30 rounded-lg text-[11px] font-mono flex items-center justify-center gap-1.5 text-slate-300 hover:text-sky-400 cursor-pointer active:scale-95 transition-all"
+            >
+              <svg class="w-3.5 h-3.5 animate-spin" style="animation-duration: 4s" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17" />
+              </svg>
+              Sleep Correctly (+20%)
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Reset Button -->
+        <div class="flex justify-between items-center text-[10px] font-mono text-slate-600 pt-2 border-t border-slate-900">
+          <span id="metrics-summary">Hugs: 0 | Cakes: 0</span>
+          <button onclick="resetMetrics()" class="hover:text-red-400 transition-colors cursor-pointer">RESET_METRICS</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SECRET OVERRIDE SECTION -->
+    <div class="flex flex-col items-center justify-center pt-8">
+      <div class="text-center space-y-2">
+        <p class="text-xs font-mono text-slate-600">OVERRIDE_PANEL_DETECTED</p>
+        <button
+          onclick="triggerEmergencyMode()"
+          class="px-6 py-2.5 rounded-xl border border-red-950/50 bg-red-950/10 text-red-400/85 hover:text-red-400 hover:bg-red-950/30 font-mono text-xs tracking-wider uppercase cursor-pointer transition-all active:scale-95 animate-pulse shadow-lg"
+          id="emergency-override-btn"
+        >
+          ⚠️ Do Not Open Until Necessary
+        </button>
+      </div>
+    </div>
+
+    <!-- Pooja Bottom Footer Tagline -->
+    <footer class="text-center pt-12 pb-4 text-xs font-mono text-slate-600 space-y-1">
+      <div>Authorized Connection Secured &bull; Encrypted with 100% Love</div>
+      <div>Designed for Sivam by Pooja ❤️ June 2026</div>
+    </footer>
+  </div>
+
+
+  <!-- ==================== 3. MODALS CONTAINER ==================== -->
+  <div id="modal-container" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+    <div class="w-full max-w-2xl bg-slate-950/90 border border-slate-800/80 rounded-2xl shadow-2xl relative overflow-hidden group animate-scaleIn">
+      
+      <!-- Top Colored Line Accent -->
+      <div id="modal-accent-line" class="absolute top-0 inset-x-0 h-1.5 bg-blue-500"></div>
+
+      <!-- Modal Body Wrapper -->
+      <div class="p-6 md:p-8 space-y-6 max-h-[85vh] overflow-y-auto">
+        
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between pb-4 border-b border-slate-900">
+          <div class="flex items-center gap-2.5">
+            <div id="modal-badge-number" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono font-bold bg-blue-950 text-blue-400">
+              01
+            </div>
+            <div>
+              <h2 id="modal-title-text" class="text-lg md:text-xl font-bold text-white capitalize">
+                Modal Title
+              </h2>
+              <span class="text-[10px] font-mono text-slate-500">DECRYPTED_MODULE &bull; SECURE_CONTENT</span>
+            </div>
+          </div>
+          
+          <!-- Close Button -->
+          <button
+            onclick="closeModal()"
+            class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-colors cursor-pointer"
+            id="modal-close-btn"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- ==================== STRESSED MODAL ==================== -->
+        <div id="modal-content-stressed" class="space-y-6 hidden">
+          <!-- Calming breathing loop -->
+          <div class="relative w-full h-24 rounded-xl bg-gradient-to-r from-blue-950/20 via-sky-950/20 to-blue-950/20 border border-blue-900/20 flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 bg-radial-gradient from-blue-500/10 to-transparent animate-pulse" style="animation-duration: 3s"></div>
+            <div class="w-12 h-12 rounded-full border border-blue-400/30 animate-ping absolute" style="animation-duration: 4s"></div>
+            <div class="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-400/50 animate-pulse absolute"></div>
+            <div class="text-xs font-mono text-blue-400 tracking-wider relative z-10 select-none animate-pulse">BREATHE IN... BREATHE OUT...</div>
+          </div>
+
+          <!-- Letter -->
+          <div class="text-sm md:text-base text-slate-300 leading-relaxed font-serif bg-black/30 p-6 rounded-xl border border-slate-900 max-h-[40vh] overflow-y-auto space-y-4">
+            <p class="font-semibold text-white">Hi Sivam,</p>
+            <p>If you're opening this folder, I'm guessing life feels heavier than usual.</p>
+            <p>I know you carry a lot on your shoulders. Sometimes more than you tell anyone.</p>
+            <p>I wish I could magically remove every stress from your life, but since I can't, I want to remind you of something.</p>
+            <p class="text-blue-300 font-bold border-l-2 border-blue-500 pl-3">You have already survived every difficult phase you've faced so far.</p>
+            <p>Every challenge that once felt impossible eventually became a story from your past.</p>
+            <p>This situation is not bigger than you.</p>
+            <p>I know the version of you that keeps showing up even when things are hard. I know the version of you that keeps trying, keeps caring, keeps finding a way forward.</p>
+            <p>And if today feels overwhelming, remember that you don't have to figure out everything at once.</p>
+            <p class="font-semibold text-white">You only need to take the next step.</p>
+            <p>I am on your team. Always.</p>
+            <div class="text-right font-sans text-rose-400 font-bold pt-2">
+              Love,<br />Pooja ❤️
+            </div>
+          </div>
+
+          <!-- Pooja's Voice note -->
+          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                </svg>
+                <span class="text-xs font-bold font-mono text-slate-200">Personal Voice Note Encryption</span>
+              </div>
+              <span class="text-[10px] font-mono text-slate-500">LOCAL_PERSISTENCE</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-black/40 p-3 rounded-lg border border-slate-950">
+              <div id="voice-note-player" class="flex items-center gap-3 w-full sm:w-auto">
+                <button
+                  id="play-voice-btn"
+                  onclick="toggleVoiceNotePlay()"
+                  class="p-3 rounded-full bg-blue-500 hover:scale-105 active:scale-95 text-black cursor-pointer flex items-center justify-center transition-all"
+                  title="Play Voice Message"
+                >
+                  <!-- Play SVG -->
+                  <svg id="play-voice-icon" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  <!-- Stop SVG (hidden) -->
+                  <svg id="stop-voice-icon" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <div>
+                  <div id="voice-note-title" class="text-xs font-bold text-slate-200">Play Pooja's Voice note</div>
+                  <div id="voice-note-status" class="text-[10px] font-mono text-slate-400">Loading local records...</div>
+                </div>
+              </div>
+
+              <!-- Audio Recording Interface -->
+              <div class="flex items-center gap-2 w-full sm:w-auto sm:justify-end">
+                <button
+                  id="record-voice-btn"
+                  onclick="toggleVoiceRecording()"
+                  class="w-full sm:w-auto py-1.5 px-3 rounded-lg border border-slate-800 bg-slate-900 text-[10px] font-mono font-bold text-blue-400 hover:text-white hover:bg-slate-850 flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+                >
+                  <svg class="w-3.5 h-3.5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                  <span id="record-voice-text">Record Voice Note</span>
+                </button>
+                <button
+                  id="delete-voice-btn"
+                  onclick="deleteVoiceNote()"
+                  class="p-1.5 rounded-lg border border-red-950 bg-red-950/20 text-red-400 hover:bg-red-950/40 cursor-pointer hidden"
+                  title="Delete Voice Note"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== DOUBT MODAL ==================== -->
+        <div id="modal-content-doubt" class="space-y-6 hidden">
+          <!-- Letter of belief -->
+          <div class="text-sm md:text-base text-slate-300 leading-relaxed font-serif bg-black/30 p-6 rounded-xl border border-slate-900 max-h-[45vh] overflow-y-auto space-y-4">
+            <p class="font-semibold text-white">Hi Birthday Boy,</p>
+            <p>Sometimes I wish you could see yourself the way I see you.</p>
+            <p>I wish you could see the sheer capability you possess in your mind, the kindness in your actions, and the strength that you radiate every single day.</p>
+            <p>It's completely natural to have moments of doubt. But remember, doubt is just a thought, not a fact.</p>
+            <p class="text-amber-300 font-bold border-l-2 border-amber-500 pl-3">You are brilliant, creative, resilient, and fully equipped to achieve everything you have put your heart into.</p>
+            <p>Look back at how far you have come. Look at all the things you thought you couldn't do, but ended up doing wonderfully anyway.</p>
+            <p>Every small step matters, and I am watching you construct an incredibly beautiful life. I believe in your path.</p>
+            <p>Do not let a bad day convince you that you have a bad life, or that you aren't capable.</p>
+            <p class="font-semibold text-white">You are more than enough. Right now. Exactly as you are.</p>
+            <div class="text-right font-sans text-rose-400 font-bold pt-2">
+              Love,<br />Pooja ❤️
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== MOTIVATION MODAL ==================== -->
+        <div id="modal-content-motivation" class="space-y-6 hidden">
+          <!-- Interactive progress checklist -->
+          <div class="text-sm md:text-base text-slate-300 leading-relaxed font-serif bg-black/30 p-6 rounded-xl border border-slate-900 max-h-[45vh] overflow-y-auto space-y-4">
+            <p class="font-semibold text-white">Hey Sivam,</p>
+            <p>This is your wife sending you a system-generated reminder: **You've got this.**</p>
+            <p>I know the goals you are aiming for can feel distant and challenging. But I also know that you are not someone who backs down.</p>
+            <p>The determination you have inside you is your superpower.</p>
+            <p class="text-emerald-300 font-bold border-l-2 border-emerald-500 pl-3">Great things are never built in a single day. They are built piece by piece, with relentless consistency.</p>
+            <p>Every hour you put in, every problem you solve, and every time you choose to push forward is a deposit into your future.</p>
+            <p>I'm here to support you in every single step of this ladder. If you are tired, learn to rest, not to quit.</p>
+            <p>Take a deep breath, reset your code compiler, and show the world what you can build.</p>
+            <p class="font-semibold text-white">Let's get back out there and make things happen together.</p>
+            <div class="text-right font-sans text-rose-400 font-bold pt-2">
+              Your biggest cheerleader,<br />Pooja ❤️
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== MISS ME MODAL ==================== -->
+        <div id="modal-content-missme" class="space-y-6 hidden">
+          <div class="text-sm md:text-base text-slate-300 leading-relaxed font-serif bg-black/30 p-6 rounded-xl border border-slate-900 max-h-[30vh] overflow-y-auto space-y-4">
+            <p class="font-semibold text-white">Hey You ❤️</p>
+            <p>If you're opening this folder, I hope you're smiling already.</p>
+            <p>I just wanted to remind you that no matter how busy life gets, no matter how stressful work becomes, and no matter how complicated life feels...</p>
+            <p class="text-rose-300 font-bold">You are my favorite person.</p>
+            <p>The one I want to tell everything to. The one I want to travel with. The one I want to celebrate wins with.</p>
+            <p class="text-white font-semibold">The one I want beside me through every version of life.</p>
+            <p>Thank you for being my partner.</p>
+            <div class="text-right font-sans text-rose-400 font-bold pt-2">
+              Love,<br />Pooja ❤️
+            </div>
+          </div>
+
+          <!-- Photo scrap gallery -->
+          <div class="space-y-4">
+            <!-- Sync Guide -->
+            <div class="p-4 rounded-xl bg-blue-950/40 border border-blue-900/40 text-xs text-slate-300 space-y-2">
+              <div class="flex items-center gap-2 text-blue-400 font-bold font-mono">
+                <svg class="w-3.5 h-3.5 text-blue-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.371 1.24.588 1.81l-3.97 2.89a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.971-2.89a1 1 0 00-1.175 0l-3.97 2.89c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.97-2.89c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                </svg>
+                <span>POOJA & SIVAM'S PHOTO SYNC GUIDE</span>
+              </div>
+              <p class="leading-relaxed">
+                Your photos inside this web build can be fully customized! Standard security limits files, but you can sync them locally instantly:
+              </p>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-mono text-amber-400">
+                <span>💡 Instructions:</span>
+                <span>1. Hover over any Polaroid card below</span>
+                <span>2. Click the 📷 camera icon</span>
+                <span>3. Upload your favorite picture of us!</span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-mono font-bold text-slate-200">Personal Memory Scrapbook</span>
+              <span class="text-[10px] font-mono text-slate-500">CLICK_IMAGE_TO_CUSTOMIZE</span>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <!-- Polaroid Card 1: Beach Us -->
+              <div id="polaroid-kurta" class="relative group/photo aspect-[3/4] rounded-xl overflow-hidden border border-slate-800 bg-slate-900 flex flex-col items-center justify-center p-2 text-center shadow-lg">
+                <!-- Custom base64 image or placeholder fallback -->
+                <div id="polaroid-kurta-img-container" class="w-full h-full relative"></div>
+              </div>
+
+              <!-- Polaroid Card 2: Home Us -->
+              <div id="polaroid-indiagate" class="relative group/photo aspect-[3/4] rounded-xl overflow-hidden border border-slate-800 bg-slate-900 flex flex-col items-center justify-center p-2 text-center shadow-lg">
+                <div id="polaroid-indiagate-img-container" class="w-full h-full relative"></div>
+              </div>
+
+              <!-- Polaroid Card 3: Fun Us -->
+              <div id="polaroid-selfie" class="relative group/photo aspect-[3/4] rounded-xl overflow-hidden border border-slate-800 bg-slate-900 flex flex-col items-center justify-center p-2 text-center shadow-lg">
+                <div id="polaroid-selfie-img-container" class="w-full h-full relative"></div>
+              </div>
+
+              <!-- Polaroid Card 4: Beach walks -->
+              <div id="polaroid-beach" class="relative group/photo aspect-[3/4] rounded-xl overflow-hidden border border-slate-800 bg-slate-900 flex flex-col items-center justify-center p-2 text-center shadow-lg">
+                <div id="polaroid-beach-img-container" class="w-full h-full relative"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== LAUGH/BUG REPORT MODAL ==================== -->
+        <div id="modal-content-laugh" class="space-y-6 hidden">
+          <div class="p-5 font-mono text-xs text-left bg-black text-slate-300 border border-slate-900 rounded-xl space-y-4 shadow-inner relative overflow-hidden">
+            <!-- Glowing grid in background -->
+            <div class="absolute inset-0 bg-grid-white/[0.02] pointer-events-none"></div>
+
+            <div class="flex justify-between border-b border-slate-900 pb-2 text-red-500 font-bold">
+              <span class="flex items-center gap-1.5">
+                <svg class="w-4 h-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                BUG REPORT #35
+              </span>
+              <span class="animate-pulse">SEVERITY: CRITICAL</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-900">
+              <span class="text-slate-500">PRODUCT:</span>
+              <span class="col-span-2 text-white font-semibold">Sivam</span>
+            </div>
+
+            <div class="space-y-1.5">
+              <span class="text-slate-500 block">KNOWN_ISSUES:</span>
+              <ul class="list-disc pl-5 space-y-1 text-slate-300 italic text-[11px]">
+                <li>Doesn't realize how amazing he is</li>
+                <li>Works even when battery is low</li>
+                <li>Requires hugs for optimal performance</li>
+              </ul>
+            </div>
+
+            <div class="space-y-1 py-2 border-t border-slate-900">
+              <span class="text-slate-500 block">RECOMMENDED_PATCH_PROCEDURES:</span>
+              <ol class="list-decimal pl-5 space-y-1 text-amber-300 text-[11px] font-bold">
+                <li>Hug Wife</li>
+                <li>Eat Birthday Cake</li>
+                <li>Sleep Properly</li>
+                <li>Repeat</li>
+              </ol>
+            </div>
+
+            <div class="flex justify-between text-slate-500 text-[10px] pt-1">
+              <span>SYSTEM_STATUS: STILL_AWESOME</span>
+              <span class="text-emerald-400 font-bold animate-pulse">● PATIENT_STABLE</span>
+            </div>
+          </div>
+
+          <!-- Apply patches shortcut action buttons -->
+          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80 space-y-3">
+            <div class="text-xs font-bold font-mono text-slate-200">Apply Recommended System Patches</div>
+            <div class="grid grid-cols-2 gap-3 text-xs font-mono">
+              <button
+                onclick="addMetric('hug')"
+                class="py-3 px-4 rounded-lg bg-gradient-to-r from-rose-500/20 to-pink-500/20 hover:from-rose-500/30 hover:to-pink-500/30 text-rose-300 border border-rose-500/40 cursor-pointer active:scale-95 transition-all flex items-center justify-center gap-2"
+              >
+                <svg class="w-3.5 h-3.5 fill-rose-500/10 text-rose-400 animate-pulse" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                Apply Hug Patch (+25%)
+              </button>
+              <button
+                onclick="addMetric('cake')"
+                class="py-3 px-4 rounded-lg bg-gradient-to-r from-amber-500/20 to-yellow-500/20 hover:from-amber-500/30 hover:to-yellow-500/30 text-amber-300 border border-amber-500/40 cursor-pointer active:scale-95 transition-all flex items-center justify-center gap-2"
+              >
+                <svg class="w-3.5 h-3.5 fill-amber-500/10 text-amber-400 animate-pulse" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                Eat Cake Patch (+15%)
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== 4. SECRET EMERGENCY SCREEN ==================== -->
+  <div id="emergency-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 hidden">
+    <div class="w-full max-w-xl p-8 rounded-2xl bg-slate-950 border-2 border-red-500/40 shadow-2xl shadow-red-500/10 relative overflow-hidden text-center space-y-6 animate-scaleIn">
+      
+      <!-- Flashing siren red gradient backdrop -->
+      <div class="absolute inset-0 bg-radial-gradient from-red-500/5 to-transparent animate-pulse" style="animation-duration: 3s"></div>
+
+      <div class="relative z-10 space-y-6">
+        <div class="inline-flex p-3 rounded-full bg-red-950/80 border border-red-900/40 text-red-500 animate-bounce">
+          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+
+        <div class="space-y-1">
+          <h2 class="text-xl md:text-2xl font-bold text-red-400 font-mono tracking-wider">
+            EMERGENCY LOVE PROTOCOL
+          </h2>
+          <span class="text-[10px] font-mono text-slate-500">BYPASS_SUCCESS &bull; COGNITIVE_RESTORE_DECOY</span>
+        </div>
+
+        <!-- Emergency Letter -->
+        <div class="text-sm md:text-base text-slate-300 leading-relaxed font-serif bg-black/50 p-6 rounded-xl border border-red-950 max-h-[45vh] overflow-y-auto space-y-4 text-left">
+          <p class="font-semibold text-white">Sivam,</p>
+          <p>If you found this section, then this is your emergency reminder.</p>
+          <p class="text-rose-300 font-bold border-l-2 border-rose-500 pl-3">You are loved more than you know.</p>
+          <p>You are appreciated more than you realize.</p>
+          <p class="text-emerald-300 font-semibold">You are stronger than you feel.</p>
+          <p>And there is one person in this world who will keep believing in you even on the days you don't believe in yourself.</p>
+          <p class="font-bold text-white">That person is me.</p>
+          <div class="text-right font-sans text-rose-400 font-bold pt-2">
+            Love,<br />Pooja ❤️
+          </div>
+        </div>
+
+        <!-- Return to Dashboard -->
+        <button
+          onclick="closeEmergencyMode()"
+          class="w-full py-3 px-6 rounded-xl font-mono text-xs font-bold text-black bg-gradient-to-r from-red-400 to-amber-300 hover:scale-105 active:scale-95 transition-transform cursor-pointer shadow-lg"
+          id="emergency-close-btn"
+        >
+          RETURN TO SYSTEM DASHBOARD
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== 5. BIRTHDAY CELEBRATION SCREEN ==================== -->
+  <div id="birthday-screen" class="relative z-10 min-h-screen px-4 md:px-8 py-12 flex flex-col items-center justify-center pb-24 hidden animate-fadeIn">
+    
+    <!-- Floating visual stars blur glow objects -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+      <div class="absolute top-[10%] left-[15%] w-12 h-12 rounded-full bg-rose-500/20 blur-xl animate-pulse"></div>
+      <div class="absolute top-[25%] right-[20%] w-16 h-16 rounded-full bg-amber-500/20 blur-xl animate-pulse" style="animation-delay: 1s"></div>
+      <div class="absolute bottom-[20%] left-[25%] w-20 h-20 rounded-full bg-blue-500/10 blur-xl animate-pulse" style="animation-delay: 2s"></div>
+    </div>
+
+    <div class="w-full max-w-2xl bg-slate-950/60 backdrop-blur-xl border border-amber-500/30 rounded-3xl p-8 md:p-12 text-center relative overflow-hidden group shadow-2xl shadow-amber-500/5">
+      
+      <!-- Golden radiant border -->
+      <div class="absolute -inset-px bg-gradient-to-r from-amber-500/20 via-transparent to-yellow-500/20 rounded-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 space-y-8">
+        
+        <!-- Back navigation button -->
+        <div class="flex justify-start">
+          <button
+            onclick="closeBirthdayPage()"
+            class="py-1.5 px-3 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs text-slate-400 hover:text-white flex items-center gap-1.5 cursor-pointer transition-all"
+            id="birthday-back-btn"
+          >
+            <!-- Left Arrow SVG -->
+            <svg class="w-3 h-3 text-slate-400 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Dashboard Console
+          </button>
+        </div>
+
+        <!-- Sparkles badge header -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/60 border border-amber-900/50 text-xs font-mono tracking-wider text-amber-400">
+          <svg class="w-3.5 h-3.5 fill-amber-400 text-amber-400 animate-spin" style="animation-duration: 3s" viewBox="0 0 24 24" stroke="none">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          SPECIAL DEPLOYMENT: AUTHENTICATED BIRTHDAY EDITION
+        </div>
+
+        <!-- Headline display typography -->
+        <div class="space-y-4">
+          <h1 class="text-4xl md:text-5xl font-black tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-white to-amber-400">
+            Happy Birthday, Sivam.
+          </h1>
+          <p class="text-sm font-mono tracking-widest text-slate-400 uppercase">
+            JUNE 28, 2026 &bull; SIVAM v35.0 (V37.0 COMPATIBLE)
+          </p>
+        </div>
+
+        <!-- Poem block -->
+        <div class="text-base md:text-lg text-slate-200 font-serif leading-relaxed bg-black/40 py-8 px-6 md:px-10 rounded-2xl border border-slate-900 max-w-lg mx-auto space-y-6 shadow-inner italic">
+          <div class="space-y-1">
+            <p class="text-xs font-mono text-slate-500 not-italic uppercase tracking-wider mb-2">Diagnostic Scan Log:</p>
+            <p>The world sees your work.</p>
+            <p class="text-blue-300 font-bold not-italic font-sans text-sm">I see your effort.</p>
+          </div>
+          
+          <div class="space-y-1">
+            <p>The world sees your achievements.</p>
+            <p class="text-amber-300 font-bold not-italic font-sans text-sm">I see your courage.</p>
+          </div>
+
+          <div class="space-y-1">
+            <p>The world sees what you do.</p>
+            <p class="text-rose-400 font-bold not-italic font-sans text-sm">I see who you are.</p>
+          </div>
+
+          <div class="pt-4 border-t border-slate-900 text-slate-100 font-sans not-italic font-medium text-base">
+            Thank you for being you.
+          </div>
+
+          <div class="text-right font-sans text-rose-400 font-extrabold not-italic pt-2">
+            Love,<br />Pooja ❤️
+          </div>
+        </div>
+
+        <!-- Birthday Cake Game Module -->
+        <div class="p-6 bg-slate-900/40 border border-slate-800 rounded-2xl max-w-md mx-auto space-y-4">
+          <div class="flex flex-col items-center justify-center space-y-3">
+            <div id="cake-instruction" class="text-xs font-mono text-slate-400">
+              🎂 Click each candle flame to blow it out and make a wish!
+            </div>
+
+            <!-- SVG Cake vector representation -->
+            <div class="relative py-4 select-none">
+              <!-- Candles flame row -->
+              <div class="flex gap-4 justify-center items-end h-12 w-48 mb-1" id="candles-row">
+                <!-- Javascript will inject candles dynamically -->
+              </div>
+
+              <!-- Cake main shape -->
+              <div class="w-56 h-20 bg-gradient-to-b from-amber-100 to-amber-200/95 border border-amber-300/40 rounded-t-xl rounded-b-md shadow-xl flex flex-col justify-center relative overflow-hidden">
+                <div class="absolute top-0 inset-x-0 h-4 bg-amber-400/50 rounded-full blur-xs"></div>
+                <div class="absolute top-3 inset-x-0 h-2 bg-rose-400/40"></div>
+                <div class="absolute top-6 inset-x-0 h-2 bg-blue-400/30"></div>
+                <div class="absolute top-9 inset-x-0 h-2 bg-amber-400/30"></div>
+                <div class="relative z-10 text-center font-mono text-slate-800 text-[10px] font-black tracking-widest">
+                  HAPPY BIRTHDAY SIVAM
+                </div>
+                <div class="absolute bottom-1 right-2 text-[8px] text-amber-800/60 font-mono">P &amp; S</div>
+              </div>
+
+              <!-- Base Stand -->
+              <div class="w-64 h-3 bg-slate-700 rounded-full mx-auto shadow-md"></div>
+            </div>
+
+            <!-- Relight trigger -->
+            <button 
+              id="relight-btn"
+              onclick="relightCandles()"
+              class="py-1 px-3 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-lg text-[10px] font-mono text-slate-400 cursor-pointer hidden"
+            >
+              Relight Candles &amp; Wish Again
+            </button>
+          </div>
+        </div>
+
+        <!-- Contract seal -->
+        <div class="space-y-2 border-t border-slate-900 pt-6">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-900/50 text-[10px] font-mono tracking-wider text-emerald-400">
+            <!-- Check Icon -->
+            <svg class="w-3 h-3 text-emerald-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            LIFETIME SUPPORT CONTRACT SUCCESSFULLY RENEWED.
+          </div>
+          <p class="text-xs text-slate-500 font-mono">
+            Sivam is legally bound to receive hugs, support, and infinite love forever.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== CORE SCRIPT INTERACTION LOGIC ==================== -->
+  <script>
+    // State management
+    const state = {
+      isBooted: false,
+      isBooting: false,
+      bootProgress: 0,
+      bootStatus: 'SYSTEM_IDLE',
+      activeModal: null, 
+      isEmergencyActive: false,
+      isBirthdayActive: false,
+      soundEnabled: true,
+      batteryLevel: 15,
+      hugsCount: 0,
+      cakesEaten: 0,
+      sleepLevel: 40,
+      candlesLit: [true, true, true, true, true],
+      showConfetti: false,
+      recordedAudio: null, // base64 WAV DataURL
+      isRecording: false,
+      isPlayingAudio: false,
+      recordingDuration: 0,
+      audioPlayer: null,
+      galleryPhotos: {
+        kurta: null,
+        indiagate: null,
+        selfie: null,
+        beach: null
+      }
+    };
+
+    // Microphones context & state
+    let audioContext = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recordingTimer = null;
+
+    // Loading boot labels
+    const bootLogs = [
+      'CONNECTING TO EMOTIONAL_STATE_SERVER_35.0...',
+      'AUTHENTICATING USER: SIVAM...',
+      'LICENSE CHECK: LIFETIME_UNLIMITED... [OK]',
+      'LOADING POOJA_LOVE_ENGINE v35.1...',
+      'CALIBRATING RESILIENCE ENHANCERS...',
+      'ESTABLISHING SAFE_HARBOR PROTOCOLS...',
+      'SYNCHRONIZING SECURE_HUGS_CHANNEL...',
+      'SYSTEM STATUS: OPTIMAL. ACCESS GRANTED.'
+    ];
+
+    // LocalStorage keys
+    const KEYS = {
+      voice: 'sivam_support_voice',
+      photos: 'sivam_support_photos',
+      hugs: 'sivam_support_hugs',
+      cakes: 'sivam_support_cakes',
+      sleep: 'sivam_support_sleep'
+    };
+
+    // Initialize application values from LocalStorage
+    window.onload = function() {
+      // Load Voice
+      state.recordedAudio = localStorage.getItem(KEYS.voice);
+      
+      // Load photos
+      const savedPhotos = localStorage.getItem(KEYS.photos);
+      if (savedPhotos) {
+        try {
+          state.galleryPhotos = JSON.parse(savedPhotos);
+        } catch (e) {
+          console.error("Photos corrupted inside storage, resetting.", e);
+        }
+      }
+
+      // Load counters
+      state.hugsCount = parseInt(localStorage.getItem(KEYS.hugs) || '0', 10);
+      state.cakesEaten = parseInt(localStorage.getItem(KEYS.cakes) || '0', 10);
+      state.sleepLevel = parseInt(localStorage.getItem(KEYS.sleep) || '40', 10);
+
+      // Render system elements
+      calculateBattery();
+      initStarsCanvas();
+      initConfetti();
+      updateMetricsDashboard();
+      renderCandles();
+      updateUI();
+    };
+
+    // Synthesize Audio Tone Toggles
+    function initAudioContext() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+    }
+
+    function playTone(freq, type, duration, volume = 0.08) {
+      if (!state.soundEnabled) return;
+      try {
+        initAudioContext();
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+        
+        gain.gain.setValueAtTime(volume, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+        
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        osc.start();
+        osc.stop(audioContext.currentTime + duration);
+      } catch (err) {
+        console.warn("Synth tone could not be synthesized", err);
+      }
+    }
+
+    // Custom musical arpeggios
+    function playClick() {
+      playTone(1000, 'sine', 0.08, 0.04);
+    }
+
+    function playChime() {
+      playTone(587.33, 'sine', 0.5, 0.06); // D5
+      setTimeout(() => {
+        playTone(880, 'sine', 0.8, 0.05); // A5
+      }, 120);
+    }
+
+    function playBootChime() {
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((note, index) => {
+        setTimeout(() => {
+          playTone(note, 'triangle', 0.6, 0.07);
+        }, index * 120);
+      });
+    }
+
+    function playFailSound() {
+      playTone(220, 'sawtooth', 0.4, 0.06); // A3
+      setTimeout(() => {
+        playTone(180, 'sawtooth', 0.5, 0.06);
+      }, 150);
+    }
+
+    // Play synthesized happy birthday song
+    function playBirthdayArpeggios() {
+      if (!state.soundEnabled) return;
+      initAudioContext();
+      
+      const tempo = 130;
+      const quarter = 60 / tempo;
+      const eighth = quarter / 2;
+      const half = quarter * 2;
+
+      const melody = [
+        { f: 261.63, d: eighth },  // Happy
+        { f: 261.63, d: eighth },  // birth-
+        { f: 293.66, d: quarter }, // -day
+        { f: 261.63, d: quarter }, // to
+        { f: 349.23, d: quarter }, // you
+        { f: 329.63, d: half },    // (pause)
+        
+        { f: 261.63, d: eighth },  // Happy
+        { f: 261.63, d: eighth },  // birth-
+        { f: 293.66, d: quarter }, // -day
+        { f: 261.63, d: quarter }, // to
+        { f: 392.00, d: quarter }, // you
+        { f: 349.23, d: half },    // (pause)
+        
+        { f: 261.63, d: eighth },  // Happy
+        { f: 261.63, d: eighth },  // birth-
+        { f: 523.25, d: quarter }, // -day
+        { f: 440.00, d: quarter }, // dear
+        { f: 349.23, d: quarter }, // Si-
+        { f: 329.63, d: quarter }, // -vam
+        { f: 293.66, d: half },    // (pause)
+        
+        { f: 466.16, d: eighth },  // Happy
+        { f: 466.16, d: eighth },  // birth-
+        { f: 440.00, d: quarter }, // -day
+        { f: 349.23, d: quarter }, // to
+        { f: 392.00, d: quarter }, // you
+        { f: 349.23, d: half }     // (end)
+      ];
+
+      let time = audioContext.currentTime + 0.1;
+
+      melody.forEach((note) => {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(note.f, time);
+
+        gain.gain.setValueAtTime(0.05, time);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + note.d - 0.03);
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start(time);
+        osc.stop(time + note.d);
+
+        // Warm perfect-fifth arpeggiator harmony
+        const harmony = audioContext.createOscillator();
+        const harmonyGain = audioContext.createGain();
+        harmony.type = 'triangle';
+        harmony.frequency.setValueAtTime(note.f * 1.5, time);
+        harmonyGain.gain.setValueAtTime(0.012, time);
+        harmonyGain.gain.exponentialRampToValueAtTime(0.0001, time + note.d - 0.05);
+
+        harmony.connect(harmonyGain);
+        harmonyGain.connect(audioContext.destination);
+        harmony.start(time);
+        harmony.stop(time + note.d);
+
+        time += note.d;
+      });
+    }
+
+    // Toggle sound
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      if (state.soundEnabled) {
+        initAudioContext();
+        document.getElementById('volume-icon-on').classList.remove('hidden');
+        document.getElementById('volume-icon-off').classList.add('hidden');
+        playTone(600, 'sine', 0.1);
+      } else {
+        document.getElementById('volume-icon-on').classList.add('hidden');
+        document.getElementById('volume-icon-off').classList.remove('hidden');
+      }
+    }
+
+    // Trigger boot logs process
+    function triggerBootSequence() {
+      initAudioContext();
+      playClick();
+      state.isBooting = true;
+      state.bootProgress = 0;
+      
+      document.getElementById('boot-control-panel').classList.add('hidden');
+      document.getElementById('boot-loader-panel').classList.remove('hidden');
+
+      const interval = setInterval(() => {
+        state.bootProgress += Math.floor(Math.random() * 14) + 5;
+        if (state.bootProgress >= 100) {
+          state.bootProgress = 100;
+          clearInterval(interval);
+          playBootChime();
+          
+          setTimeout(() => {
+            state.isBooted = true;
+            state.isBooting = false;
+            updateUI();
+          }, 450);
+        }
+
+        // Update textual boot logging representation
+        const logIdx = Math.min(Math.floor((state.bootProgress / 100) * bootLogs.length), bootLogs.length - 1);
+        document.getElementById('boot-status-msg').innerText = bootLogs[logIdx];
+        document.getElementById('boot-percentage').innerText = state.bootProgress + '%';
+        document.getElementById('boot-progress-bar').style.width = state.bootProgress + '%';
+      }, 160);
+    }
+
+    // Calculate Battery Percentage
+    function calculateBattery() {
+      const hugBonus = Math.min(state.hugsCount * 25, 50);
+      const cakeBonus = Math.min(state.cakesEaten * 15, 30);
+      const sleepBonus = Math.min(Math.max(state.sleepLevel - 40, 0), 20);
+      state.batteryLevel = Math.min(15 + hugBonus + cakeBonus + sleepBonus, 100);
+    }
+
+    // Dynamic state trackers and UI rendering helpers
+    function updateMetricsDashboard() {
+      calculateBattery();
+      
+      // Update battery numbers
+      const batteryText = document.getElementById('dashboard-battery-text');
+      batteryText.innerText = state.batteryLevel + '%';
+      
+      // Update color and classes based on battery percentage
+      const batteryIcon = document.getElementById('dashboard-battery-icon');
+      if (state.batteryLevel <= 20) {
+        batteryText.className = "text-red-400 font-bold animate-pulse";
+        batteryIcon.className = "w-4 h-4 text-red-500 animate-pulse";
+      } else {
+        batteryText.className = "text-emerald-400 font-semibold";
+        batteryIcon.className = "w-4 h-4 text-blue-400";
+      }
+
+      // Update booster counters summary string
+      document.getElementById('metrics-summary').innerText = `Hugs: ${state.hugsCount} | Cakes: ${state.cakesEaten}`;
+    }
+
+    function addMetric(type) {
+      playChime();
+      if (type === 'hug') {
+        state.hugsCount++;
+        localStorage.setItem(KEYS.hugs, state.hugsCount);
+      } else if (type === 'cake') {
+        state.cakesEaten++;
+        localStorage.setItem(KEYS.cakes, state.cakesEaten);
+      } else if (type === 'sleep') {
+        state.sleepLevel = Math.min(state.sleepLevel + 15, 100);
+        localStorage.setItem(KEYS.sleep, state.sleepLevel);
+      }
+      updateMetricsDashboard();
+    }
+
+    function resetMetrics() {
+      playFailSound();
+      state.hugsCount = 0;
+      state.cakesEaten = 0;
+      state.sleepLevel = 40;
+      localStorage.removeItem(KEYS.hugs);
+      localStorage.removeItem(KEYS.cakes);
+      localStorage.removeItem(KEYS.sleep);
+      updateMetricsDashboard();
+    }
+
+    // UI Routing Navigation Toggles
+    function updateUI() {
+      // Hide all main root page containers
+      document.getElementById('landing-screen').classList.add('hidden');
+      document.getElementById('main-dashboard').classList.add('hidden');
+      document.getElementById('emergency-screen').classList.add('hidden');
+      document.getElementById('birthday-screen').classList.add('hidden');
+      document.getElementById('modal-container').classList.add('hidden');
+
+      if (!state.isBooted) {
+        document.getElementById('landing-screen').classList.remove('hidden');
+      } else {
+        if (state.isEmergencyActive) {
+          document.getElementById('emergency-screen').classList.remove('hidden');
+        } else if (state.isBirthdayActive) {
+          document.getElementById('birthday-screen').classList.remove('hidden');
+          // Start drawing confetti loop if appropriate
+          if (state.showConfetti) {
+            document.getElementById('confetti-canvas').classList.remove('hidden');
+          } else {
+            document.getElementById('confetti-canvas').classList.add('hidden');
+          }
+        } else {
+          document.getElementById('main-dashboard').classList.remove('hidden');
+          if (state.activeModal) {
+            document.getElementById('modal-container').classList.remove('hidden');
+          }
+        }
+      }
+    }
+
+    // Modals
+    function openModal(modalId) {
+      playChime();
+      state.activeModal = modalId;
+      
+      // Set accent line colored stripes
+      const line = document.getElementById('modal-accent-line');
+      const badge = document.getElementById('modal-badge-number');
+      const title = document.getElementById('modal-title-text');
+      
+      // Hide all contents inside modal body
+      document.getElementById('modal-content-stressed').classList.add('hidden');
+      document.getElementById('modal-content-doubt').classList.add('hidden');
+      document.getElementById('modal-content-motivation').classList.add('hidden');
+      document.getElementById('modal-content-missme').classList.add('hidden');
+      document.getElementById('modal-content-laugh').classList.add('hidden');
+
+      if (modalId === 'stressed') {
+        line.className = "absolute top-0 inset-x-0 h-1.5 bg-blue-500";
+        badge.className = "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono font-bold bg-blue-950 text-blue-400";
+        badge.innerText = "01";
+        title.innerText = "Open When You're Stressed";
+        document.getElementById('modal-content-stressed').classList.remove('hidden');
+        updateVoiceNoteStatusLabel();
+      } else if (modalId === 'doubt') {
+        line.className = "absolute top-0 inset-x-0 h-1.5 bg-amber-500";
+        badge.className = "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono font-bold bg-amber-950 text-amber-400";
+        badge.innerText = "02";
+        title.innerText = "Open When You Doubt Yourself";
+        document.getElementById('modal-content-doubt').classList.remove('hidden');
+      } else if (modalId === 'motivation') {
+        line.className = "absolute top-0 inset-x-0 h-1.5 bg-emerald-500";
+        badge.className = "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono font-bold bg-emerald-950 text-emerald-400";
+        badge.innerText = "03";
+        title.innerText = "Open When You Need Motivation";
+        document.getElementById('modal-content-motivation').classList.remove('hidden');
+      } else if (modalId === 'missme') {
+        line.className = "absolute top-0 inset-x-0 h-1.5 bg-rose-500";
+        badge.className = "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono font-bold bg-rose-950 text-rose-400";
+        badge.innerText = "04";
+        title.innerText = "Open When You Miss Me";
+        document.getElementById('modal-content-missme').classList.remove('hidden');
+        renderScrapbookPhotos();
+      } else if (modalId === 'laugh') {
+        line.className = "absolute top-0 inset-x-0 h-1.5 bg-purple-500";
+        badge.className = "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono font-bold bg-purple-950 text-purple-400";
+        badge.innerText = "05";
+        title.innerText = "Open When You Need A Laugh";
+        document.getElementById('modal-content-laugh').classList.remove('hidden');
+      }
+
+      updateUI();
+    }
+
+    function closeModal() {
+      playClick();
+      stopVoicePlayback();
+      state.activeModal = null;
+      updateUI();
+    }
+
+    // Siren Emergency Toggle
+    function triggerEmergencyMode() {
+      playFailSound();
+      state.isEmergencyActive = true;
+      updateUI();
+    }
+
+    function closeEmergencyMode() {
+      playChime();
+      state.isEmergencyActive = false;
+      updateUI();
+    }
+
+    // Special Birthday routing
+    function openBirthdayPage() {
+      playChime();
+      state.isBirthdayActive = true;
+      updateUI();
+    }
+
+    function closeBirthdayPage() {
+      playClick();
+      state.isBirthdayActive = false;
+      updateUI();
+    }
+
+    // Voice Note Recorder & Player using HTML5 APIs
+    function updateVoiceNoteStatusLabel() {
+      const label = document.getElementById('voice-note-status');
+      const deleteBtn = document.getElementById('delete-voice-btn');
+      const playIcon = document.getElementById('play-voice-icon');
+      const stopIcon = document.getElementById('stop-voice-icon');
+      const playBtn = document.getElementById('play-voice-btn');
+
+      if (state.recordedAudio) {
+        label.innerText = "Status: Locked and loaded successfully!";
+        deleteBtn.classList.remove('hidden');
+        playBtn.classList.remove('opacity-50', 'pointer-events-none');
+      } else {
+        label.innerText = "Status: Empty. Pooja can record an active note below!";
+        deleteBtn.classList.add('hidden');
+        playBtn.classList.add('opacity-50', 'pointer-events-none');
+      }
+
+      if (state.isPlayingAudio) {
+        playIcon.classList.add('hidden');
+        stopIcon.classList.remove('hidden');
+      } else {
+        playIcon.classList.remove('hidden');
+        stopIcon.classList.add('hidden');
+      }
+    }
+
+    async function toggleVoiceRecording() {
+      initAudioContext();
+      const recBtn = document.getElementById('record-voice-btn');
+      const recText = document.getElementById('record-voice-text');
+
+      if (state.isRecording) {
+        // Stop recording
+        playClick();
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+          mediaRecorder.stop();
+          mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        }
+        clearInterval(recordingTimer);
+        state.isRecording = false;
+        recBtn.classList.remove('bg-red-500', 'text-white', 'border-red-500');
+        recText.innerText = "Record Voice Note";
+      } else {
+        // Start Recording
+        playClick();
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = function(e) {
+            if (e.data.size > 0) {
+              audioChunks.push(e.data);
+            }
+          };
+
+          mediaRecorder.onstop = function() {
+            const blob = new Blob(audioChunks, { type: 'audio/wav' });
+            const reader = new FileReader();
+            reader.onloadend = function() {
+              state.recordedAudio = reader.result;
+              localStorage.setItem(KEYS.voice, state.recordedAudio);
+              playChime();
+              updateVoiceNoteStatusLabel();
+            };
+            reader.readAsDataURL(blob);
+          };
+
+          mediaRecorder.start();
+          state.isRecording = true;
+          state.recordingDuration = 0;
+          
+          recBtn.classList.add('bg-red-500', 'text-white', 'border-red-500');
+          recText.innerText = "Recording... (Stop)";
+
+          recordingTimer = setInterval(() => {
+            state.recordingDuration++;
+            recText.innerText = `Recording... [${state.recordingDuration}s]`;
+          }, 1000);
+
+        } catch (err) {
+          console.error("Microphone denied", err);
+          alert("Microphone capture permission is required to record customized birthday or supportive notes!");
+        }
+      }
+    }
+
+    function toggleVoiceNotePlay() {
+      if (!state.recordedAudio) return;
+      initAudioContext();
+
+      if (state.isPlayingAudio) {
+        stopVoicePlayback();
+      } else {
+        playClick();
+        state.audioPlayer = new Audio(state.recordedAudio);
+        state.isPlayingAudio = true;
+        state.audioPlayer.play().catch(e => {
+          console.error("Audio playback error", e);
+          state.isPlayingAudio = false;
+          updateVoiceNoteStatusLabel();
+        });
+        
+        state.audioPlayer.onended = function() {
+          state.isPlayingAudio = false;
+          updateVoiceNoteStatusLabel();
+        };
+
+        updateVoiceNoteStatusLabel();
+      }
+    }
+
+    function stopVoicePlayback() {
+      if (state.audioPlayer) {
+        state.audioPlayer.pause();
+        state.isPlayingAudio = false;
+        updateVoiceNoteStatusLabel();
+      }
+    }
+
+    function deleteVoiceNote() {
+      playFailSound();
+      stopVoicePlayback();
+      state.recordedAudio = null;
+      localStorage.removeItem(KEYS.voice);
+      updateVoiceNoteStatusLabel();
+    }
+
+
+    // Photo Scrapbook File upload system
+    function triggerPhotoUpload(photoKey) {
+      document.getElementById('upload-input-' + photoKey).click();
+    }
+
+    function handlePhotoSelected(e, photoKey) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onloadend = function() {
+        state.galleryPhotos[photoKey] = reader.result;
+        localStorage.setItem(KEYS.photos, JSON.stringify(state.galleryPhotos));
+        playChime();
+        renderScrapbookPhotos();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearPhoto(photoKey) {
+      playFailSound();
+      state.galleryPhotos[photoKey] = null;
+      localStorage.setItem(KEYS.photos, JSON.stringify(state.galleryPhotos));
+      renderScrapbookPhotos();
+    }
+
+    function renderScrapbookPhotos() {
+      const configs = {
+        kurta: { label: "Hi Love", sub: "June 2026", svg: `<svg class="w-16 h-16 text-yellow-500" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="currentColor" opacity="0.1"/><polygon points="50,30 38,70 62,70" fill="currentColor" opacity="0.4"/><circle cx="50" cy="55" r="3" fill="#fbbf24"/><circle cx="50" cy="65" r="3" fill="#fbbf24"/></svg>` },
+        indiagate: { label: "ahh, uhh", sub: "ahh, wow", svg: `<svg class="w-16 h-16 text-sky-400" viewBox="0 0 100 100"><rect x="30" y="35" width="40" height="25" rx="1" fill="currentColor" opacity="0.4"/><path d="M45,35 L45,60 L55,60 L55,35" fill="#020617"/></svg>` },
+        selfie: { label: "Pooja & Sivam", sub: "Love & Smiles", svg: `<svg class="w-16 h-16 text-rose-400 animate-pulse" viewBox="0 0 100 100"><path d="M12,40 C12,20 35,15 50,35 C65,15 88,20 88,40 C88,70 50,90 50,90 C50,90 12,70 12,40 Z" fill="currentColor" opacity="0.4"/></svg>` },
+        beach: { label: "Sivam at Beach", sub: "Nature Walk", svg: `<svg class="w-16 h-16 text-sky-400" viewBox="0 0 100 100"><path d="M10,50 Q25,40 40,50 T70,50 T100,50 L100,95 L10,95 Z" fill="currentColor" opacity="0.25"/><path d="M10,65 Q25,55 40,65 T70,65 T100,65 L100,95 L10,95 Z" fill="currentColor" opacity="0.45"/></svg>` }
+      };
+
+      Object.keys(configs).forEach(key => {
+        const container = document.getElementById('polaroid-' + key + '-img-container');
+        const img = state.galleryPhotos[key];
+        const conf = configs[key];
+
+        if (img) {
+          container.innerHTML = `
+            <img src="${img}" class="w-full h-full object-cover rounded-lg" alt="${conf.label}" />
+            <button onclick="clearPhoto('${key}')" class="absolute top-1.5 right-1.5 p-1 rounded bg-black/60 hover:bg-red-600/80 text-white cursor-pointer transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            </button>
+          `;
+        } else {
+          container.innerHTML = `
+            <div class="flex flex-col items-center justify-center space-y-2 w-full h-full p-2 relative">
+              ${conf.svg}
+              <span class="text-[10px] font-bold text-slate-300">${conf.label}</span>
+              <span class="text-[8px] font-mono text-slate-500">${conf.sub}</span>
+              
+              <label onclick="triggerPhotoUpload('${key}')" class="absolute inset-0 bg-black/60 opacity-0 group-hover/photo:opacity-100 flex items-center justify-center cursor-pointer transition-opacity rounded-xl">
+                <input id="upload-input-${key}" type="file" accept="image/*" onchange="handlePhotoSelected(event, '${key}')" class="hidden" />
+                <svg class="w-5 h-5 text-white hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <circle cx="12" cy="13" r="3" />
+                </svg>
+              </label>
+            </div>
+          `;
+        }
+      });
+    }
+
+
+    // Birthday Candle Blow Game Toggles
+    function renderCandles() {
+      const container = document.getElementById('candles-row');
+      container.innerHTML = '';
+
+      state.candlesLit.forEach((isLit, idx) => {
+        const candleWrapper = document.createElement('div');
+        candleWrapper.className = "flex flex-col items-center w-6 h-12 cursor-pointer";
+        candleWrapper.onclick = () => blowCandle(idx);
+
+        const flameHtml = isLit 
+          ? `<span class="w-3 h-5 rounded-full bg-gradient-to-t from-amber-500 via-orange-400 to-yellow-300 animate-bounce shadow-md shadow-orange-500/50"></span>`
+          : `<span class="w-1.5 h-1.5 rounded-full bg-slate-600 animate-pulse mt-3"></span>`;
+
+        const colors = idx % 2 === 0 ? 'from-blue-400 to-blue-500' : 'from-rose-400 to-rose-500';
+        const wickHtml = `<span class="w-1.5 h-6 rounded-t bg-gradient-to-b ${colors}"></span>`;
+
+        candleWrapper.innerHTML = flameHtml + wickHtml;
+        container.appendChild(candleWrapper);
+      });
+    }
+
+    function blowCandle(idx) {
+      playClick();
+      state.candlesLit[idx] = !state.candlesLit[idx];
+      renderCandles();
+
+      // Check if all blown out
+      if (state.candlesLit.every(c => !c)) {
+        setTimeout(() => {
+          playBirthdayArpeggios();
+          triggerCelebrationConfetti();
+        }, 300);
+      }
+    }
+
+    function relightCandles() {
+      playChime();
+      state.candlesLit = [true, true, true, true, true];
+      state.showConfetti = false;
+      document.getElementById('cake-instruction').innerText = "🎂 Click each candle flame to blow it out and make a wish!";
+      document.getElementById('relight-btn').classList.add('hidden');
+      document.getElementById('confetti-canvas').classList.add('hidden');
+      renderCandles();
+    }
+
+
+    // Canvas Background Star Particle Generator
+    function initStarsCanvas() {
+      const canvas = document.getElementById('star-canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      window.onresize = function() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      };
+
+      const stars = [];
+      const colors = [
+        'rgba(59, 130, 246, ', // Blue
+        'rgba(147, 51, 234, ', // Purple
+        'rgba(251, 191, 36, ', // Amber
+        'rgba(255, 255, 255, ' // White
+      ];
+
+      for (let i = 0; i < 110; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          size: Math.random() * 1.5 + 0.5,
+          speed: Math.random() * 0.12 + 0.02,
+          opacity: Math.random(),
+          color: colors[Math.floor(Math.random() * colors.length)],
+          angle: Math.random() * Math.PI * 2
+        });
+      }
+
+      function renderLoop() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Deep cosmos radial gradient
+        const bgGrad = ctx.createRadialGradient(width/2, height/2, 10, width/2, height/2, Math.max(width, height));
+        bgGrad.addColorStop(0, '#090d16');
+        bgGrad.addColorStop(0.5, '#05070c');
+        bgGrad.addColorStop(1, '#020204');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, width, height);
+
+        // Ambient glowing orb highlights
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        
+        // Blue Top Left
+        const orb1 = ctx.createRadialGradient(0, 0, 10, 0, 0, width * 0.6);
+        orb1.addColorStop(0, 'rgba(30, 58, 138, 0.22)');
+        orb1.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = orb1;
+        ctx.fillRect(0, 0, width, height);
+
+        // Purple Bottom Right
+        const orb2 = ctx.createRadialGradient(width, height, 10, width, height, width * 0.5);
+        orb2.addColorStop(0, 'rgba(124, 58, 237, 0.12)');
+        orb2.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = orb2;
+        ctx.fillRect(0, 0, width, height);
+        ctx.restore();
+
+        // Render particles
+        stars.forEach(star => {
+          star.opacity += star.speed;
+          if (star.opacity > 1 || star.opacity < 0.1) {
+            star.speed = -star.speed;
+          }
+          star.x += Math.cos(star.angle) * 0.08;
+          star.y += Math.sin(star.angle) * 0.08;
+
+          if (star.x < 0) star.x = width;
+          if (star.x > width) star.x = 0;
+          if (star.y < 0) star.y = height;
+          if (star.y > height) star.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+          ctx.fillStyle = star.color + Math.max(0.1, star.opacity) + ')';
+          ctx.fill();
+
+          // Delicate flares on bright yellow/gold stars
+          if (star.size > 1.5 && star.color.includes('251, 191, 36')) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(251, 191, 36, ${star.opacity * 0.45})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(star.x - 4, star.y);
+            ctx.lineTo(star.x + 4, star.y);
+            ctx.moveTo(star.x, star.y - 4);
+            ctx.lineTo(star.x, star.y + 4);
+            ctx.stroke();
+          }
+        });
+
+        requestAnimationFrame(renderLoop);
+      }
+
+      renderLoop();
+    }
+
+
+    // Standard Confetti spray engine
+    let confettiParticles = [];
+    function initConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      function loop() {
+        if (!state.showConfetti) {
+          requestAnimationFrame(loop);
+          return;
+        }
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Render confetti particles
+        confettiParticles.forEach((p, idx) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.rotation += p.vRotation;
+
+          if (p.y > height) {
+            // Re-spawn or remove
+            p.y = -10;
+            p.x = Math.random() * width;
+            p.vy = Math.random() * 3 + 2;
+          }
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.width / 2, -p.height / 2, p.width, p.height);
+          ctx.restore();
+        });
+
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+
+    function triggerCelebrationConfetti() {
+      state.showConfetti = true;
+      document.getElementById('cake-instruction').innerText = "✨ Sivam made a wish! May all your dreams come true! ✨";
+      document.getElementById('relight-btn').classList.remove('hidden');
+      document.getElementById('confetti-canvas').classList.remove('hidden');
+
+      confettiParticles = [];
+      const colors = ['#f43f5e', '#fbbf24', '#3b82f6', '#10b981', '#a855f7', '#ec4899'];
+      
+      const width = window.innerWidth;
+      for (let i = 0; i < 150; i++) {
+        confettiParticles.push({
+          x: Math.random() * width,
+          y: Math.random() * -300 - 50,
+          vx: Math.random() * 3 - 1.5,
+          vy: Math.random() * 4 + 3,
+          gravity: 0.12,
+          rotation: Math.random() * Math.PI * 2,
+          vRotation: Math.random() * 0.1 - 0.05,
+          width: Math.random() * 6 + 6,
+          height: Math.random() * 10 + 6,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+    }
+  </script>
+</body>
 </html>
+
 
