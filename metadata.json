@@ -1,0 +1,6 @@
+{
+  "name": "Emergency Husband Support System",
+  "description": "A premium, deeply personal birthday dashboard gift from Pooja to Sivam featuring supportive modules, custom interactive layouts, and a special birthday celebration screen.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
